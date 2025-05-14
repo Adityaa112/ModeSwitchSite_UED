@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { Moon, Sun } from "lucide-react";
 
 export default function Header() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -28,6 +29,10 @@ export default function Header() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  };
+
   return (
     <header className="py-4">
       <div className="container mx-auto px-4">
@@ -37,20 +42,22 @@ export default function Header() {
               YesBlog
             </Link>
           </h1>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button 
-              onClick={() => setTheme("light")} 
-              className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-opacity-90 transition-all"
-            >
-              Switch to Light Mode
-            </Button>
-            <Button 
-              onClick={() => setTheme("dark")} 
-              className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-opacity-90 transition-all"
-            >
-              Switch to Dark Mode
-            </Button>
-          </div>
+          <Button 
+            onClick={toggleTheme} 
+            className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-opacity-90 transition-all"
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="mr-2 h-4 w-4" />
+                Switch to Light Mode
+              </>
+            ) : (
+              <>
+                <Moon className="mr-2 h-4 w-4" />
+                Switch to Dark Mode
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </header>
