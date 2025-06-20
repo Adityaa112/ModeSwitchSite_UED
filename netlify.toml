@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [build]
   command = "npm run build"
   publish = "dist"
@@ -16,4 +17,24 @@
 [[redirects]]
   from = "/*"
   to = "/index.html"
+=======
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[dev]
+  command = "npm run dev"
+  port = 5000
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+>>>>>>> 90c0274842ce6d1dedcee8b885a571712080e402
   status = 200 
