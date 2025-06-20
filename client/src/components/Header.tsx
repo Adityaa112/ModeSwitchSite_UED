@@ -1,63 +1,61 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
+import { Moon, Sun, Menu, X, PenLine } from "lucide-react";
+import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Header() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    // Check for saved theme preference or use system preference
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem("theme") as 'light' | 'dark' | null;
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      
-      return (savedTheme === "dark" || (!savedTheme && prefersDark)) ? "dark" : "light";
-    }
-    return 'light'; // Default to light theme
-  });
-
-  useEffect(() => {
-    // Apply theme class to document
-    const htmlElement = document.documentElement;
-    
-    if (theme === "dark") {
-      htmlElement.classList.add("dark");
-    } else {
-      htmlElement.classList.remove("dark");
-    }
-    
-    // Save theme preference
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
+  const isMobile = useIsMobile();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
-    <header className="py-4">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border py-3 md:py-4 transition-all duration-300">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center space-y-4 md:flex-row md:justify-between md:space-y-0">
-          <h1 className="text-3xl font-bold text-center">
-            <Link href="/" className="hover:text-primary transition-colors">
-              YesBlog
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+            <Link href="/" className="hover:text-primary transition-colors flex items-center">
+              <PenLine className="w-5 h-5 md:w-6 md:h-6 text-primary mr-2" />
+              <span className="text-primary mr-1">Inspire</span>Press
             </Link>
           </h1>
-          <Button 
-            onClick={toggleTheme} 
-            className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-opacity-90 transition-all"
-          >
-            {theme === 'dark' ? (
-              <>
-                <Sun className="mr-2 h-4 w-4" />
-                Switch to Light Mode
-              </>
-            ) : (
-              <>
-                <Moon className="mr-2 h-4 w-4" />
-                Switch to Dark Mode
-              </>
-            )}
-          </Button>
+
+          {/* Mobile menu button */}
+          {isMobile && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={toggleTheme}
+              className="md:hidden"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </Button>
+          )}
+
+          {/* Desktop theme toggle */}
+          {!isMobile && (
+            <Button 
+              onClick={toggleTheme} 
+              variant="outline"
+              size="icon"
+              className="rounded-full w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 transition-all"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+              ) : (
+                <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </header>

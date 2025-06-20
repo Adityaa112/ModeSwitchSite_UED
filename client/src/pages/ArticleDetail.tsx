@@ -5,6 +5,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export default function ArticleDetail() {
   const [, params] = useRoute("/article/:id");
@@ -19,14 +22,14 @@ export default function ArticleDetail() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <div className="container mx-auto px-4 flex-grow">
-          <div className="animate-pulse mt-10">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-4 w-3/4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-6 w-1/2"></div>
-            <div className="h-72 bg-gray-200 dark:bg-gray-700 rounded mb-8"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-full"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-full"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-3/4"></div>
+        <div className="container mx-auto px-4 flex-grow py-8">
+          <div className="animate-pulse mt-6 max-w-3xl mx-auto">
+            <div className="h-8 bg-muted rounded-md mb-4 w-3/4"></div>
+            <div className="h-4 bg-muted rounded-md mb-6 w-1/2"></div>
+            <div className="h-64 bg-muted rounded-md mb-8"></div>
+            <div className="h-4 bg-muted rounded-md mb-2 w-full"></div>
+            <div className="h-4 bg-muted rounded-md mb-2 w-full"></div>
+            <div className="h-4 bg-muted rounded-md mb-2 w-3/4"></div>
           </div>
         </div>
         <Footer />
@@ -39,10 +42,10 @@ export default function ArticleDetail() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="container mx-auto px-4 flex-grow flex items-center justify-center">
-          <div className="text-center">
+          <div className="text-center py-16">
             <h1 className="text-2xl font-bold mb-4">Article not found</h1>
             <Link href="/">
-              <Button className="bg-primary text-white px-4 py-2 rounded-full">
+              <Button className="responsive-btn bg-primary text-white">
                 Return to Home
               </Button>
             </Link>
@@ -53,64 +56,99 @@ export default function ArticleDetail() {
     );
   }
 
+  const formattedDate = format(new Date(article.publishedAt), 'MMM dd, yyyy');
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className="container mx-auto px-4 pt-6">
-        <Link href="/">
-          <Button className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-opacity-90 inline-flex items-center mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to homepage
-          </Button>
-        </Link>
-      </div>
-
-      <div className="container mx-auto px-4 max-w-3xl">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">{article.title}</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{article.excerpt}</p>
-        
-        <div className="mb-8">
-          <img 
-            src={article.imageUrl} 
-            alt={article.title} 
-            className="w-full h-auto rounded-lg"
-          />
-        </div>
-        
-        <div className="flex items-center mb-6">
-          <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+      <main className="flex-grow">
+        <article className="container mx-auto px-4 py-6 md:py-10 max-w-4xl">
+          <div className="mb-6">
+            <Button 
+              asChild 
+              variant="ghost" 
+              className="text-sm group mb-6 hover:bg-transparent p-0"
+            >
+              <Link href="/">
+                <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-[-2px] transition-transform" />
+                Back to stories
+              </Link>
+            </Button>
+          
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">{article.title}</h1>
+            
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              {article.category && (
+                <Badge variant="outline" className="text-xs font-medium">
+                  {article.category}
+                </Badge>
+              )}
+              
+              <div className="flex items-center text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4 mr-1" />
+                {formattedDate}
+              </div>
+              
+              <div className="flex items-center text-sm text-muted-foreground">
+                <Clock className="h-4 w-4 mr-1" />
+                {article.readTime} min read
+              </div>
+            </div>
+            
+            {article.excerpt && (
+              <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8">{article.excerpt}</p>
+            )}
+          </div>
+          
+          <div className="mb-8 rounded-xl overflow-hidden">
             <img 
-              src={article.author.avatarUrl} 
-              alt={article.author.name} 
-              className="w-full h-full object-cover"
+              src={article.imageUrl} 
+              alt={article.title} 
+              className="w-full h-auto object-cover"
             />
           </div>
-          <div>
-            <p className="font-medium">{article.author.name}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {format(new Date(article.publishedAt), 'MMM dd, yyyy')}
-            </p>
+          
+          <Separator className="my-6" />
+          
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-border">
+              <img 
+                src={article.author.avatarUrl} 
+                alt={article.author.name} 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="font-medium">{article.author.name}</p>
+              <p className="text-sm text-muted-foreground">
+                Published on {formattedDate}
+              </p>
+            </div>
           </div>
-        </div>
-        
-        <div className="prose dark:prose-invert max-w-none mb-12">
-          {article.content.split("\n").map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-        </div>
-        
-        <div className="flex justify-center mb-12">
-          <button className="inline-flex items-center text-primary hover:underline font-medium">
-            READ MORE
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </div>
-      </div>
+          
+          <div className="prose dark:prose-invert max-w-none mb-12">
+            {article.content.split("\n").map((paragraph, index) => (
+              <p key={index} className="mb-4 text-base sm:text-lg leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+          
+          <Separator className="my-8" />
+          
+          <div className="text-center mb-12">
+            <Button 
+              asChild 
+              className="responsive-btn bg-primary"
+            >
+              <Link href="/">
+                Browse more stories
+              </Link>
+            </Button>
+          </div>
+        </article>
+      </main>
       
       <Footer />
     </div>
